@@ -52,14 +52,16 @@ namespace TrucoRioPlatense.ViewModels.Register {
 
 		public RegisterCommand RegisterCommand;
 		public ICommand BackToLoginCommand { get; }
+		public ICommand DoRegister { get; }
 
 		public RegisterViewPageModel(FirebaseAuthClient authClient) {
 			RegisterCommand = new RegisterCommand(this, authClient);
+			DoRegister = new Command(ExecuteRegister);
 			BackToLoginCommand = new Command(OnBackToLoginCommand);
 		}
 
 
-		public async Task DoRegister() {
+		private async void ExecuteRegister() {
 			var result = await RegisterCommand.InvokeAsync(null);
 
 			// Manejo del resultado del RegisterCommand
