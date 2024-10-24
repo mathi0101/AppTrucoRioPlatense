@@ -25,5 +25,9 @@ namespace TrucoRioPlatense.Features.Commands.Login {
 				return FirebaseHelper.ReturnUserAuthResponse(ex);
 			}
 		}
+
+		internal override async Task InvokeAsync(object parameter) {
+			await ExecuteAsync(parameter);
+		}
 	}
 }
