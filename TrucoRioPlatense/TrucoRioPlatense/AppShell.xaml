@@ -3,13 +3,13 @@
     x:Class="TrucoRioPlatense.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:TrucoRioPlatense.Views"
+    xmlns:pages="clr-namespace:TrucoRioPlatense.Pages"
     Shell.FlyoutBehavior="Disabled"
-    Title="TrucoRioPlatense">
+    Title="Truco Rio Platense">
 
     <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate local:LoginPage}"
+        ContentTemplate="{DataTemplate pages:LoginViewPage}"
         Route="MainPage" />
 
 </Shell>

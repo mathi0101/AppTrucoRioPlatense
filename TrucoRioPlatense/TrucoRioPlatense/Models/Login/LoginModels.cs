@@ -16,5 +16,15 @@
 			public string Reason { get; set; }
 		}
 
+
+	}
+	internal enum Authentication_View_Response {
+		Unable = -1,
+		Success = 0,
+		InvalidCredentials = 1,
+		AccountLocked = 2,
+		AccountNotFound = 3,
+		TooManyAttempts = 4,
+		PasswordExpired = 5,
 	}
 }

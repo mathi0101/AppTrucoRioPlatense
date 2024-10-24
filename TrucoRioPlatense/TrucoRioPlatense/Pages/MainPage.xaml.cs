@@ -1,4 +1,4 @@
-﻿namespace TrucoRioPlatense {
+﻿namespace TrucoRioPlatense.Pages {
 	public partial class MainPage : ContentPage {
 		int count = 0;
 

@@ -69,13 +69,27 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Helpers\" />
 	  <Folder Include="Data\" />
 	  <Folder Include="Constants\" />
+	  <Folder Include="Services\Firebase\" />
+	  <Folder Include="Services\Sqlite3\" />
+	  <Folder Include="Views\Register\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\LoginPage.xaml">
+	  <Compile Update="Pages\RegisterViewPage.xaml.cs">
+	    <DependentUpon>RegisterViewPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\LoginViewPage.xaml.cs">
+	    <DependentUpon>LoginViewPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Pages\RegisterViewPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\LoginViewPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
