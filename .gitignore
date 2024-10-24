@@ -5,9 +5,11 @@
 bin/
 obj/
 out/
-
-# Visual Studio
 .vs/
+
+# Credentials
+appsettings.json
+
 
 # User-specific files
 *.rsuser
