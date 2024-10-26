@@ -27,7 +27,7 @@ namespace TrucoRioPlatense {
 			builder.Services.AddTransient<RegisterViewPage>(s => new RegisterViewPage(s.GetRequiredService<RegisterViewPageModel>()));
 
 
-			builder.Configuration.AddJsonFile("appSettings.json", false, true);
+			builder.Configuration.AddJsonFile("appSettings.json", false);
 
 			// FirebaseAuthentication
 			builder.Services.AddSingleton(new FirebaseAuthClient(new FirebaseAuthConfig() {

@@ -1,6 +1,6 @@
 ﻿using Firebase.Auth;
 using System.Windows.Input;
-using TrucoRioPlatense.Features.Commands.Login;
+using TrucoRioPlatense.Features.Commands.Auth;
 using TrucoRioPlatense.Pages;
 using TrucoRioPlatense.ViewModels.Register;
 

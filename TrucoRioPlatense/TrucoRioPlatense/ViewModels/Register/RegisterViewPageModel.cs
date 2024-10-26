@@ -1,6 +1,6 @@
 ﻿using Firebase.Auth;
 using System.Windows.Input;
-using TrucoRioPlatense.Features.Commands.Register;
+using TrucoRioPlatense.Features.Commands.Auth;
 using TrucoRioPlatense.Models.Login;
 
 namespace TrucoRioPlatense.ViewModels.Register {
@@ -50,19 +50,19 @@ namespace TrucoRioPlatense.ViewModels.Register {
 			}
 		}
 
-		public RegisterCommand RegisterCommand;
+		private readonly RegisterCommand _registerCommand;
 		public ICommand BackToLoginCommand { get; }
 		public ICommand DoRegister { get; }
 
 		public RegisterViewPageModel(FirebaseAuthClient authClient) {
-			RegisterCommand = new RegisterCommand(this, authClient);
+			_registerCommand = new RegisterCommand(this, authClient);
 			DoRegister = new Command(ExecuteRegister);
 			BackToLoginCommand = new Command(OnBackToLoginCommand);
 		}
 
 
 		private async void ExecuteRegister() {
-			var result = await RegisterCommand.InvokeAsync(null);
+			var result = await _registerCommand.ExecuteWithResultAsync(null);
 
 			// Manejo del resultado del RegisterCommand
 			if (result == Authentication_View_Response.Success) {
