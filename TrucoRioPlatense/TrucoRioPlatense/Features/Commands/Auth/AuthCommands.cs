@@ -26,15 +26,7 @@ namespace TrucoRioPlatense.Features.Commands.Auth {
 				UserCredential auth = await _authClient.CreateUserWithEmailAndPasswordAsync(_viewModel.Email, _viewModel.Password, _viewModel.DisplayName);
 				if (auth != null) {
 					_currentUserStore.CurrentUser = auth.User;
-
-					UserAccounts user = new UserAccounts() {
-						PlayerID = auth.User.Uid,
-						DisplayName = auth.User.Info.DisplayName,
-						Email = auth.User.Info.DisplayName,
-						IsConnected = true,
-					};
-
-					var result = await _dbConnection.Connection.InsertAsync(user);
+					await SaveNewLocalUser(auth);
 
 					return Authentication_View_Response.Success;
 				} else {
@@ -44,45 +36,114 @@ namespace TrucoRioPlatense.Features.Commands.Auth {
 				return FirebaseHelper.ReturnUserAuthResponse(ex);
 			}
 		}
+
+		private async Task SaveNewLocalUser(UserCredential auth) {
+			UserAccounts user = new UserAccounts();
+			user.CargarNuevoUsuario(auth);
+
+			var actualUsers = await _dbConnection.Connection.Table<UserAccounts>().ToListAsync();
+			actualUsers.ForEach(x => {
+				x.IsConnected = false;
+				x.Token = null;
+				x.TokenExpireDate = null;
+			});
+			await _dbConnection.Connection.UpdateAllAsync(actualUsers, true);
+			await user.InsertAsync(_dbConnection);
+		}
 	}
 
 	internal class LoginCommand : AsyncCommandBase<Authentication_View_Response> {
-		private readonly LoginViewPageModel _viewModel;
+		private readonly LoginViewPageModel _loginviewModel;
 		private readonly FirebaseAuthClient _authClient;
 		private readonly CurrentUserStore _currentUserStore;
 		private readonly SQLiteDB _dbConnection;
 
 		public LoginCommand(LoginViewPageModel viewModel, FirebaseAuthClient authClient, CurrentUserStore currentUserStore, SQLiteDB dbConnection) {
-			_viewModel = viewModel;
+			_loginviewModel = viewModel;
 			_authClient = authClient;
 			_currentUserStore = currentUserStore;
 			_dbConnection = dbConnection;
 		}
 
-
 		protected override async Task<Authentication_View_Response> ExecuteAsync(object? parameter) {
 			try {
-				UserCredential auth = await _authClient.SignInWithEmailAndPasswordAsync(_viewModel.Email, _viewModel.Password);
+				if (parameter is FirebaseProviderType providerType) {
 
-				if (auth != null) {
+					UserCredential? auth = null;
+					switch (providerType) {
+						case FirebaseProviderType.Unknown:
+						break;
+						case FirebaseProviderType.EmailAndPassword:
+						auth = await _authClient.SignInWithEmailAndPasswordAsync(_loginviewModel.Email, _loginviewModel.Password);
+						break;
+						case FirebaseProviderType.Facebook:
+						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+						break;
+						case FirebaseProviderType.Google:
+						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+						break;
+						case FirebaseProviderType.Github:
+						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+						break;
+						case FirebaseProviderType.Twitter:
+						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+						break;
+						case FirebaseProviderType.Microsoft:
+						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+						break;
+						case FirebaseProviderType.Apple:
+						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+						break;
+						case FirebaseProviderType.Phone:
+						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+						break;
+						case FirebaseProviderType.Anonymous:
+						auth = await _authClient.SignInAnonymouslyAsync();
+						break;
+						default:
+						break;
+					}
 
-					_currentUserStore.CurrentUser = auth.User;
+					if (auth != null) {
 
-					UserAccounts user = new UserAccounts() {
-						PlayerID = auth.User.Uid,
-						DisplayName = auth.User.Info.DisplayName,
-						Email = auth.User.Info.DisplayName,
-						IsConnected = true,
-					};
+						_currentUserStore.CurrentUser = auth.User;
 
-					var result = await _dbConnection.Connection.InsertAsync(user);
+						await AddLocalUser(auth, _dbConnection);
 
-					return result > 0 ? Authentication_View_Response.Success : Authentication_View_Response.Unable;
-				} else
+						return Authentication_View_Response.Success;
+					} else
+						return Authentication_View_Response.Unable;
+				} else {
 					return Authentication_View_Response.Unable;
+				}
 			} catch (FirebaseAuthHttpException ex) {
 				return FirebaseHelper.ReturnUserAuthResponse(ex);
 			}
+		}
+		private async Task AddLocalUser(UserCredential auth, SQLiteDB conn) {
+
+
+			var actualUsers = await _dbConnection.Connection.Table<UserAccounts>().ToListAsync();
+			actualUsers.ForEach(x => {
+				x.IsConnected = false;
+				x.Token = null;
+				x.TokenExpireDate = null;
+			});
+
+			if (actualUsers.FindIndex(u => u.PlayerID == auth.User.Uid) is int ind && ind > 0) {
+				var usr = actualUsers[ind];
+				usr.Token = auth.User.Credential.IdToken;
+				usr.TokenExpireDate = auth.User.Credential.Created.AddSeconds(auth.User.Credential.ExpiresIn);
+				usr.IsConnected = true;
+			} else {
+				UserAccounts user = new UserAccounts();
+				user.CargarNuevoUsuario(auth);
+
+				await user.InsertAsync(conn);
+			}
+
+			await _dbConnection.Connection.UpdateAllAsync(actualUsers, true);
+
 		}
 	}
 

@@ -83,7 +83,7 @@ namespace TrucoRioPlatense.ViewModels.Register {
 		#region Metodos
 		#region Privados
 		private async void ExecuteRegister() {
-			if (ValidateFields()) {
+			if (_registerCommand.CanExecute(null) && ValidateFields()) {
 
 				var result = await _registerCommand.ExecuteWithResultAsync(null);
 

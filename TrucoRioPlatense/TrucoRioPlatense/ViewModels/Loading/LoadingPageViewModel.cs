@@ -1,4 +1,5 @@
 ﻿using Firebase.Auth;
+using TrucoRioPlatense.Features.Commands.Auth;
 using TrucoRioPlatense.Models.LocalDatabase;
 using TrucoRioPlatense.Models.Login;
 using TrucoRioPlatense.Pages;
@@ -14,6 +15,8 @@ namespace TrucoRioPlatense.ViewModels.Register {
 		private readonly FirebaseAuthClient _authClient;
 		private readonly CurrentUserStore _currentUserStore;
 		private readonly SQLiteDB _dbConnection;
+		private readonly LoginCommand _loginCommand;
+		private readonly LoginViewPageModel _loginViewModel;
 
 		#endregion
 
@@ -29,6 +32,10 @@ namespace TrucoRioPlatense.ViewModels.Register {
 			_authClient = authClient;
 			_currentUserStore = currentUserStore;
 			_dbConnection = dbConnection;
+
+			_loginViewModel = new LoginViewPageModel(authClient, currentUserStore, dbConnection);
+
+			_loginCommand = new LoginCommand(_loginViewModel, authClient, currentUserStore, dbConnection);
 		}
 
 		#endregion
@@ -46,8 +53,8 @@ namespace TrucoRioPlatense.ViewModels.Register {
 
 
 
-			var users = await _dbConnection.Connection.FindAsync<UserAccounts>(u => u.IsConnected); // Implementa este método para obtener los usuarios
-			return users; // Retorna el primer usuario si existe
+			var users = await _dbConnection.Connection.FindAsync<UserAccounts>(u => u.IsConnected);
+			return users;
 		}
 
 		#endregion
@@ -55,17 +62,13 @@ namespace TrucoRioPlatense.ViewModels.Register {
 		#region Publicas
 
 		internal async Task LoadDataAsync() {
-			// Simula el tiempo de carga (puedes eliminar esto más tarde)
 			await Task.Delay(2000);
 
-			// Verifica si hay un usuario en la base de datos
 			var user = await CheckUserInDatabaseAsync();
 
 			if (user != null) {
-				// Redirigir a la Main Page si hay un usuario
 				Application.Current.MainPage = new MainPage();
 			} else {
-				// Redirigir al Login si no hay usuario
 				Application.Current.MainPage = new LoginViewPage(new LoginViewPageModel(_authClient, _currentUserStore, _dbConnection));
 			}
 		}

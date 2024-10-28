@@ -78,10 +78,10 @@ namespace TrucoRioPlatense.ViewModels.Login {
 
 		#region Privados
 		private async void ExecuteLogin() {
-			if (ValidateLogin()) {
+			if (_loginCommand.CanExecute(null) && ValidateLogin()) {
 
 
-				var result = await _loginCommand.ExecuteWithResultAsync(null);
+				var result = await _loginCommand.ExecuteWithResultAsync(FirebaseProviderType.EmailAndPassword);
 
 
 
