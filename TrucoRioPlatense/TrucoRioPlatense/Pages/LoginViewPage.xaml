@@ -8,7 +8,7 @@
         <Entry x:Name="EmailEntry" Placeholder="Email" Keyboard="Email" Text="{Binding Email}"/>
         <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" Text="{Binding Password}"/>
 
-        <Button Text="Login" Command="{Binding LoginCommand}" />
+        <Button Text="Login" Command="{Binding DoLogin}" />
         <Label Text="No tienes cuenta? Registrate aquí!" 
                HorizontalOptions="Center" 
                TextDecorations="Underline" 

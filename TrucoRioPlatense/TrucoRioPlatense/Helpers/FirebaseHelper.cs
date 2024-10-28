@@ -1,7 +1,7 @@
 ﻿using Firebase.Auth;
 using Newtonsoft.Json;
 using TrucoRioPlatense.Models.Login;
-using static TrucoRioPlatense.Models.Login.LoginModels;
+using static TrucoRioPlatense.Models.Login.AuthLoginModels;
 
 namespace TrucoRioPlatense.Helpers {
 	internal static class FirebaseHelper {

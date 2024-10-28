@@ -8,6 +8,11 @@
     Title="Truco Rio Platense">
 
     <ShellContent
+    Title="Load"
+    ContentTemplate="{DataTemplate pages:LoadingPage}"
+    Route="LoadingPage" />
+    
+    <ShellContent
         Title="Login"
         ContentTemplate="{DataTemplate pages:LoginViewPage}"
         Route="LoginPage" />

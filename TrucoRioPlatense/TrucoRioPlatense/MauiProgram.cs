@@ -1,7 +1,9 @@
 ﻿using Firebase.Auth;
 using Firebase.Auth.Providers;
-using Microsoft.Extensions.Configuration;
+using TrucoRioPlatense.Data.MauiBuilder;
+using TrucoRioPlatense.Models.Login;
 using TrucoRioPlatense.Pages;
+using TrucoRioPlatense.Services.Sqlite3;
 using TrucoRioPlatense.ViewModels.Login;
 using TrucoRioPlatense.ViewModels.Register;
 
@@ -17,8 +19,9 @@ namespace TrucoRioPlatense {
 				});
 
 
-
-
+			// LoadingPage
+			builder.Services.AddTransient<LoadingPageViewModel>();
+			builder.Services.AddTransient<LoadingPage>(s => new LoadingPage(s.GetRequiredService<LoadingPageViewModel>()));
 			// Login Page
 			builder.Services.AddTransient<LoginViewPageModel>();
 			builder.Services.AddTransient<LoginViewPage>(s => new LoginViewPage(s.GetRequiredService<LoginViewPageModel>()));
@@ -27,7 +30,11 @@ namespace TrucoRioPlatense {
 			builder.Services.AddTransient<RegisterViewPage>(s => new RegisterViewPage(s.GetRequiredService<RegisterViewPageModel>()));
 
 
-			builder.Configuration.AddJsonFile("appSettings.json", false);
+
+			builder.Services.AddSingleton<CurrentUserStore>();
+
+			AppCredentialsLoader.LoadCredentials(builder);
+
 
 			// FirebaseAuthentication
 			builder.Services.AddSingleton(new FirebaseAuthClient(new FirebaseAuthConfig() {
@@ -38,7 +45,7 @@ namespace TrucoRioPlatense {
 				]
 			}));
 
-
+			builder.Services.AddSingleton(new SQLiteDB("TrucoRioPlatense.db"));
 
 
 			return builder.Build();

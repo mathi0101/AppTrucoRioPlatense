@@ -1,5 +1,5 @@
 ﻿namespace TrucoRioPlatense.Models.Login {
-	internal class LoginModels {
+	internal class AuthLoginModels {
 		public class FirebaseErrorResponse {
 			public FirebaseError Error { get; set; }
 		}
