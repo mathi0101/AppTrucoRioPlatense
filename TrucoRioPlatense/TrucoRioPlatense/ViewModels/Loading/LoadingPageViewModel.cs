@@ -61,7 +61,7 @@ namespace TrucoRioPlatense.ViewModels.Register {
 		#region Publicas
 
 		internal async Task LoadDataAsync() {
-			await Task.Delay(500);
+			await Task.Delay(5000);
 
 			var user = await CheckUserInDatabaseAsync();
 

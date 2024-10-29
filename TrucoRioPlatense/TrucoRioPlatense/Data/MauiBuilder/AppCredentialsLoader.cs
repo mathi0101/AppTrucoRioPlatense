@@ -8,7 +8,7 @@ namespace TrucoRioPlatense.Data.MauiBuilder {
 			string configPath;
 
 #if ANDROID
-			configPath= Path.Combine(FileSystem.Current.AppDataDirectory, "Credentials/appSettings.json");
+			configPath= Path.Combine(FileSystem.Current.AppDataDirectory, "appSettings.json");
 			var assembly = Assembly.GetExecutingAssembly();
 			using (Stream stream = assembly.GetManifestResourceStream("TrucoRioPlatense.Credentials.appSettings.json"))
 			using (FileStream fileStream = File.Create(configPath)) {
