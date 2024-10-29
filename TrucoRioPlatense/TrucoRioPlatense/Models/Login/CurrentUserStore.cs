@@ -3,6 +3,6 @@
 namespace TrucoRioPlatense.Models.Login {
 	internal class CurrentUserStore {
 
-		internal required User CurrentUser { get; set; }
+		internal required UserCredential AuthenticatedUserCredential { get; set; }
 	}
 }

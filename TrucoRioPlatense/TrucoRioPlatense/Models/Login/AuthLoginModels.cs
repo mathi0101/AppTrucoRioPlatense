@@ -18,7 +18,7 @@
 
 
 	}
-	internal enum Authentication_View_Response {
+	public enum Authentication_View_Response {
 		Unable = -1,
 		Success = 0,
 		InvalidCredentials = 1,

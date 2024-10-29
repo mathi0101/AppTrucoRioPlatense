@@ -1,6 +1,7 @@
 ﻿using Firebase.Auth;
 using System.Windows.Input;
 using TrucoRioPlatense.Features.Commands.Auth;
+using TrucoRioPlatense.Helpers;
 using TrucoRioPlatense.Models.Login;
 using TrucoRioPlatense.Pages;
 using TrucoRioPlatense.Services.Sqlite3;
@@ -62,7 +63,7 @@ namespace TrucoRioPlatense.ViewModels.Login {
 		public LoginViewPageModel(FirebaseAuthClient authClient, CurrentUserStore userStore, SQLiteDB dbConnection) {
 			_authClient = authClient;
 			_currentUserStore = userStore;
-			_loginCommand = new LoginCommand(this, authClient, userStore, dbConnection);
+			_loginCommand = new LoginCommand(this, authClient, userStore, dbConnection, OnLoginException);
 			_dbConnection = dbConnection;
 
 			NavigateToRegisterCommand = new Command(OnNavigateToRegister);
@@ -78,15 +79,59 @@ namespace TrucoRioPlatense.ViewModels.Login {
 
 		#region Privados
 		private async void ExecuteLogin() {
-			if (_loginCommand.CanExecute(null) && ValidateLogin()) {
+			if (_loginCommand.CanExecute(null)) {
+				if (ValidateLogin()) {
+
+					var result = await _loginCommand.ExecuteWithResultAsync(FirebaseProviderType.EmailAndPassword);
 
 
-				var result = await _loginCommand.ExecuteWithResultAsync(FirebaseProviderType.EmailAndPassword);
+
+
+
+					if (result.Value == Authentication_View_Response.Success) {
+
+						await Application.Current.MainPage.DisplayAlert("Éxito", "Bienvenido!", "OK");
+
+						Application.Current.MainPage = new MainPage();
+					} else {
+
+						await Application.Current.MainPage.DisplayAlert("Error", "Hubo un error en el registro", "OK");
+
+
+					}
+				} else {
+					await Application.Current.MainPage.DisplayAlert("Error", "Faltan datos", "OK");
+				}
+			}
+		}
+
+		private bool ValidateLogin() {
+			return true;
+		}
+
+
+		private async void OnLoginException(Exception ex) {
+			if (ex is FirebaseAuthHttpException fex) {
+				var error = FirebaseHelper.GetJsonErrorResponse(fex);
+
+				await Application.Current.MainPage.DisplayAlert("Error", error.Error.Message, "OK");
+
+			} else {
+				await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+
+			}
+		}
+
+		private async void RegisterModel_RegistrationCompleted(object? sender, EventArgs e) {
+			if (_currentUserStore.AuthenticatedUserCredential != null) {
+
+
+				var result = await _loginCommand.ExecuteWithResultAsync(FirebaseProviderType.Unknown);
 
 
 
 
-				if (result == Authentication_View_Response.Success) {
+				if (result.Value == Authentication_View_Response.Success) {
 
 					await Application.Current.MainPage.DisplayAlert("Éxito", "Bienvenido!", "OK");
 
@@ -99,11 +144,6 @@ namespace TrucoRioPlatense.ViewModels.Login {
 				}
 			}
 		}
-
-		private bool ValidateLogin() {
-			return true;
-		}
-
 		private async void OnNavigateToRegister() {
 
 			RegisterViewPageModel registerModel = new RegisterViewPageModel(_authClient, _currentUserStore, _dbConnection);
@@ -111,10 +151,8 @@ namespace TrucoRioPlatense.ViewModels.Login {
 			registerModel.RegistrationCompleted += RegisterModel_RegistrationCompleted;
 
 			await Application.Current.MainPage.Navigation.PushAsync(new RegisterViewPage(registerModel));
-		}
 
-		private void RegisterModel_RegistrationCompleted(object? sender, EventArgs e) {
-			ExecuteLogin();
+			//await Shell.Current.GoToAsync(nameof(RegisterViewPage));
 		}
 		#endregion
 

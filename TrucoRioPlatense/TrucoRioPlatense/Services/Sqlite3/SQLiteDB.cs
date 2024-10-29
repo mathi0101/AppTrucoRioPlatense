@@ -31,6 +31,13 @@ namespace TrucoRioPlatense.Services.Sqlite3 {
 		#region Privados
 		private string GetDatabasePath(string dbName) {
 			string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+			string pathCarpeta = "TrucoRioPlatenseApp";
+			if (!string.IsNullOrEmpty(pathCarpeta)) folderPath = Path.Combine(folderPath, pathCarpeta);
+
+			if (!Directory.Exists(folderPath)) {
+				Directory.CreateDirectory(folderPath);
+			}
 			return Path.Combine(folderPath, dbName);
 		}
 		#endregion

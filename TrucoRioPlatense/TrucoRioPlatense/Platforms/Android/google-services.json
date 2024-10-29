@@ -1,18 +1,27 @@
 {
   "project_info": {
     "project_number": "449779302779",
+    "firebase_url": "https://trucorioplatense-default-rtdb.firebaseio.com",
     "project_id": "trucorioplatense",
     "storage_bucket": "trucorioplatense.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:449779302779:android:34517ff24db768a1113dde",
+        "mobilesdk_app_id": "1:449779302779:android:af9d2f3de0929be3113dde",
         "android_client_info": {
-          "package_name": "com.mathias.trucoapp"
+          "package_name": "com.devGroup.trucoRioPlatense"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "449779302779-i973e7j1roim4h3nj789afs5ke9pbngt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.devGroup.trucoRioPlatense",
+            "certificate_hash": "554b388dab9316eae5493efd4e4b6d2837ad22c8"
+          }
+        },
         {
           "client_id": "449779302779-mj27ai74o1iin0akkj8pjjk4bsrmatdv.apps.googleusercontent.com",
           "client_type": 3

@@ -83,22 +83,26 @@ namespace TrucoRioPlatense.ViewModels.Register {
 		#region Metodos
 		#region Privados
 		private async void ExecuteRegister() {
-			if (_registerCommand.CanExecute(null) && ValidateFields()) {
+			if (_registerCommand.CanExecute(null)) {
+				if (ValidateFields()) {
 
-				var result = await _registerCommand.ExecuteWithResultAsync(null);
+					var result = await _registerCommand.ExecuteWithResultAsync(null);
 
 
-				if (result == Authentication_View_Response.Success) {
-					RegistrationCompleted?.Invoke(this, EventArgs.Empty);
+					if (result.Value == Authentication_View_Response.Success) {
+						RegistrationCompleted?.Invoke(this, EventArgs.Empty);
 
-					await Application.Current.MainPage.DisplayAlert("Éxito", "Registro completado", "OK");
+						await Application.Current.MainPage.DisplayAlert("Éxito", "Registro completado", "OK");
 
-					await Application.Current.MainPage.Navigation.PopAsync();
+						await Application.Current.MainPage.Navigation.PopAsync();
+					} else {
+
+						await Application.Current.MainPage.DisplayAlert("Error", result.Error.ResponseData, "OK");
+
+
+					}
 				} else {
-
-					await Application.Current.MainPage.DisplayAlert("Error", "Hubo un error en el registro", "OK");
-
-
+					await Application.Current.MainPage.DisplayAlert("Error", "Faltan datos", "OK");
 				}
 			}
 		}

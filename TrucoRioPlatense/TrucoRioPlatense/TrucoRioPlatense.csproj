@@ -37,6 +37,12 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 		<UserSecretsId>f2b7eac5-fe1e-4036-9d16-a11638f12ba5</UserSecretsId>
+
+		<AndroidKeyStore>True</AndroidKeyStore>
+                <AndroidSigningKeyAlias>myKeySign</AndroidSigningKeyAlias>
+                <AndroidSigningKeyPass>Dynamia2024!</AndroidSigningKeyPass>
+                <AndroidSigningStorePass>Dynamia2024!</AndroidSigningStorePass>
+                <AndroidSigningKeyStore>Credentials/my-release-key.jks</AndroidSigningKeyStore>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -62,7 +68,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="appSettings.json">
+	  <EmbeddedResource Include="Credentials\appSettings.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 	  </EmbeddedResource>

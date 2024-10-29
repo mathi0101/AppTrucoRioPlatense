@@ -1,5 +1,4 @@
 ﻿using Firebase.Auth;
-using TrucoRioPlatense.Helpers;
 using TrucoRioPlatense.Models.LocalDatabase;
 using TrucoRioPlatense.Models.Login;
 using TrucoRioPlatense.Services.Sqlite3;
@@ -7,7 +6,7 @@ using TrucoRioPlatense.ViewModels.Login;
 using TrucoRioPlatense.ViewModels.Register;
 
 namespace TrucoRioPlatense.Features.Commands.Auth {
-	internal class RegisterCommand : AsyncCommandBase<Authentication_View_Response> {
+	internal class RegisterCommand : AsyncCommandBase {
 		private readonly RegisterViewPageModel _viewModel;
 		private readonly FirebaseAuthClient _authClient;
 		private readonly CurrentUserStore _currentUserStore;
@@ -21,19 +20,19 @@ namespace TrucoRioPlatense.Features.Commands.Auth {
 		}
 
 
-		protected override async Task<Authentication_View_Response> ExecuteAsync(object? parameter) {
+		protected override async Task<AsyncCommandBaseResult> ExecuteAsync(object? parameter) {
 			try {
 				UserCredential auth = await _authClient.CreateUserWithEmailAndPasswordAsync(_viewModel.Email, _viewModel.Password, _viewModel.DisplayName);
 				if (auth != null) {
-					_currentUserStore.CurrentUser = auth.User;
+					_currentUserStore.AuthenticatedUserCredential = auth;
 					await SaveNewLocalUser(auth);
 
-					return Authentication_View_Response.Success;
+					return AsyncCommandBaseResult.Success;
 				} else {
-					return Authentication_View_Response.Unable;
+					return AsyncCommandBaseResult.Unable;
 				}
 			} catch (FirebaseAuthHttpException ex) {
-				return FirebaseHelper.ReturnUserAuthResponse(ex);
+				return new AsyncCommandBaseResult(ex);
 			}
 		}
 
@@ -42,82 +41,81 @@ namespace TrucoRioPlatense.Features.Commands.Auth {
 			user.CargarNuevoUsuario(auth);
 
 			var actualUsers = await _dbConnection.Connection.Table<UserAccounts>().ToListAsync();
-			actualUsers.ForEach(x => {
-				x.IsConnected = false;
-				x.Token = null;
-				x.TokenExpireDate = null;
-			});
-			await _dbConnection.Connection.UpdateAllAsync(actualUsers, true);
+			if (actualUsers.Count > 0) {
+				actualUsers.ForEach(x => {
+					x.Token = null;
+					x.TokenExpireDate = null;
+				});
+				await _dbConnection.Connection.UpdateAllAsync(actualUsers, true);
+			}
 			await user.InsertAsync(_dbConnection);
 		}
 	}
 
-	internal class LoginCommand : AsyncCommandBase<Authentication_View_Response> {
+	internal class LoginCommand : AsyncCommandBase {
 		private readonly LoginViewPageModel _loginviewModel;
 		private readonly FirebaseAuthClient _authClient;
 		private readonly CurrentUserStore _currentUserStore;
 		private readonly SQLiteDB _dbConnection;
 
-		public LoginCommand(LoginViewPageModel viewModel, FirebaseAuthClient authClient, CurrentUserStore currentUserStore, SQLiteDB dbConnection) {
+
+		public LoginCommand(LoginViewPageModel viewModel, FirebaseAuthClient authClient, CurrentUserStore currentUserStore, SQLiteDB dbConnection, Action<Exception>? onException = null) : base(onException) {
 			_loginviewModel = viewModel;
 			_authClient = authClient;
 			_currentUserStore = currentUserStore;
 			_dbConnection = dbConnection;
 		}
 
-		protected override async Task<Authentication_View_Response> ExecuteAsync(object? parameter) {
-			try {
-				if (parameter is FirebaseProviderType providerType) {
+		protected override async Task<AsyncCommandBaseResult> ExecuteAsync(object? parameter) {
+			if (parameter is FirebaseProviderType providerType) {
 
-					UserCredential? auth = null;
-					switch (providerType) {
-						case FirebaseProviderType.Unknown:
-						break;
-						case FirebaseProviderType.EmailAndPassword:
-						auth = await _authClient.SignInWithEmailAndPasswordAsync(_loginviewModel.Email, _loginviewModel.Password);
-						break;
-						case FirebaseProviderType.Facebook:
-						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
-						break;
-						case FirebaseProviderType.Google:
-						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
-						break;
-						case FirebaseProviderType.Github:
-						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
-						break;
-						case FirebaseProviderType.Twitter:
-						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
-						break;
-						case FirebaseProviderType.Microsoft:
-						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
-						break;
-						case FirebaseProviderType.Apple:
-						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
-						break;
-						case FirebaseProviderType.Phone:
-						auth = await _authClient.SignInWithRedirectAsync(providerType, null);
-						break;
-						case FirebaseProviderType.Anonymous:
-						auth = await _authClient.SignInAnonymouslyAsync();
-						break;
-						default:
-						break;
-					}
-
-					if (auth != null) {
-
-						_currentUserStore.CurrentUser = auth.User;
-
-						await AddLocalUser(auth, _dbConnection);
-
-						return Authentication_View_Response.Success;
-					} else
-						return Authentication_View_Response.Unable;
-				} else {
-					return Authentication_View_Response.Unable;
+				UserCredential? auth = null;
+				switch (providerType) {
+					case FirebaseProviderType.Unknown:
+					auth = await _authClient.SignInWithCredentialAsync(_currentUserStore.AuthenticatedUserCredential.AuthCredential);
+					break;
+					case FirebaseProviderType.EmailAndPassword:
+					auth = await _authClient.SignInWithEmailAndPasswordAsync(_loginviewModel.Email, _loginviewModel.Password);
+					break;
+					case FirebaseProviderType.Facebook:
+					auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+					break;
+					case FirebaseProviderType.Google:
+					auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+					break;
+					case FirebaseProviderType.Github:
+					auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+					break;
+					case FirebaseProviderType.Twitter:
+					auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+					break;
+					case FirebaseProviderType.Microsoft:
+					auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+					break;
+					case FirebaseProviderType.Apple:
+					auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+					break;
+					case FirebaseProviderType.Phone:
+					auth = await _authClient.SignInWithRedirectAsync(providerType, null);
+					break;
+					case FirebaseProviderType.Anonymous:
+					auth = await _authClient.SignInAnonymouslyAsync();
+					break;
+					default:
+					break;
 				}
-			} catch (FirebaseAuthHttpException ex) {
-				return FirebaseHelper.ReturnUserAuthResponse(ex);
+
+				if (auth != null) {
+
+					_currentUserStore.AuthenticatedUserCredential = auth;
+
+					await AddLocalUser(auth, _dbConnection);
+
+					return AsyncCommandBaseResult.Success;
+				} else
+					return AsyncCommandBaseResult.Unable;
+			} else {
+				return AsyncCommandBaseResult.Unable;
 			}
 		}
 		private async Task AddLocalUser(UserCredential auth, SQLiteDB conn) {
@@ -125,16 +123,15 @@ namespace TrucoRioPlatense.Features.Commands.Auth {
 
 			var actualUsers = await _dbConnection.Connection.Table<UserAccounts>().ToListAsync();
 			actualUsers.ForEach(x => {
-				x.IsConnected = false;
 				x.Token = null;
 				x.TokenExpireDate = null;
 			});
 
-			if (actualUsers.FindIndex(u => u.PlayerID == auth.User.Uid) is int ind && ind > 0) {
+			if (actualUsers.FindIndex(u => u.PlayerID == auth.User.Uid) is int ind && ind >= 0) {
 				var usr = actualUsers[ind];
 				usr.Token = auth.User.Credential.IdToken;
 				usr.TokenExpireDate = auth.User.Credential.Created.AddSeconds(auth.User.Credential.ExpiresIn);
-				usr.IsConnected = true;
+				usr.Password = _loginviewModel.Password;
 			} else {
 				UserAccounts user = new UserAccounts();
 				user.CargarNuevoUsuario(auth);

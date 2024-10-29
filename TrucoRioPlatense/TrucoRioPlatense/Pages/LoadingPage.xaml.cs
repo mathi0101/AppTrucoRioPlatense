@@ -4,7 +4,7 @@ namespace TrucoRioPlatense.Pages {
 
 	public partial class LoadingPage : ContentPage {
 
-		private LoadingPageViewModel _model { get => BindingContext as LoadingPageViewModel; }
+		private LoadingPageViewModel? _model { get => BindingContext as LoadingPageViewModel; }
 
 		public LoadingPage(object bindingContext) {
 			InitializeComponent();
@@ -15,7 +15,8 @@ namespace TrucoRioPlatense.Pages {
 		protected override async void OnAppearing() {
 			base.OnAppearing();
 
-			await _model.LoadDataAsync();
+			if (_model != null)
+				await _model.LoadDataAsync();
 		}
 	}
 }

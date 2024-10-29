@@ -48,13 +48,12 @@ namespace TrucoRioPlatense.ViewModels.Register {
 
 		#region Privados
 
-		private async Task<UserAccounts> CheckUserInDatabaseAsync() {
+		private async Task<UserAccounts?> CheckUserInDatabaseAsync() {
 			await _dbConnection.PreloadDatabase();
 
+			var usr = new UserAccounts();
 
-
-			var users = await _dbConnection.Connection.FindAsync<UserAccounts>(u => u.IsConnected);
-			return users;
+			return await usr.GetUserAsync(_dbConnection, u => !string.IsNullOrEmpty(u.Token)) ? usr : null;
 		}
 
 		#endregion
@@ -62,15 +61,29 @@ namespace TrucoRioPlatense.ViewModels.Register {
 		#region Publicas
 
 		internal async Task LoadDataAsync() {
-			await Task.Delay(2000);
+			await Task.Delay(500);
 
 			var user = await CheckUserInDatabaseAsync();
 
-			if (user != null) {
-				Application.Current.MainPage = new MainPage();
-			} else {
-				Application.Current.MainPage = new LoginViewPage(new LoginViewPageModel(_authClient, _currentUserStore, _dbConnection));
+			//LoginViewPageModel viewModel = new LoginViewPageModel(_authClient, _currentUserStore, _dbConnection);
+			if (user == null) {
+				Application.Current.MainPage = new NavigationPage(new LoginViewPage(_loginViewModel));
+				return;
+			} else if (DateTime.Now > user.TokenExpireDate) {
+
+				_loginViewModel.Email = user.Email;
+				_loginViewModel.Password = user.Password;
+				var result = await _loginCommand.ExecuteWithResultAsync(FirebaseProviderType.EmailAndPassword);
+
+				;
+				if (result.Value != Authentication_View_Response.Success) {
+					Application.Current.MainPage = new NavigationPage(new LoginViewPage(_loginViewModel));
+					return;
+				}
 			}
+
+			Application.Current.MainPage = new NavigationPage(new MainPage());
+			//await Shell.Current.GoToAsync(nameof(MainPage));
 		}
 
 		#endregion

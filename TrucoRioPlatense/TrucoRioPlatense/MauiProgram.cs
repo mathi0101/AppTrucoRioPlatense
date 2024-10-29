@@ -19,15 +19,18 @@ namespace TrucoRioPlatense {
 				});
 
 
-			// LoadingPage
-			builder.Services.AddTransient<LoadingPageViewModel>();
-			builder.Services.AddTransient<LoadingPage>(s => new LoadingPage(s.GetRequiredService<LoadingPageViewModel>()));
+			// Loading Page
+			builder.Services.AddSingleton<LoadingPageViewModel>();
+			builder.Services.AddSingleton<LoadingPage>(s => new LoadingPage(s.GetRequiredService<LoadingPageViewModel>()));
 			// Login Page
-			builder.Services.AddTransient<LoginViewPageModel>();
-			builder.Services.AddTransient<LoginViewPage>(s => new LoginViewPage(s.GetRequiredService<LoginViewPageModel>()));
-			// Register View
+			builder.Services.AddSingleton<LoginViewPageModel>();
+			builder.Services.AddSingleton<LoginViewPage>(s => new LoginViewPage(s.GetRequiredService<LoginViewPageModel>()));
+			// Register Page
 			builder.Services.AddTransient<RegisterViewPageModel>();
 			builder.Services.AddTransient<RegisterViewPage>(s => new RegisterViewPage(s.GetRequiredService<RegisterViewPageModel>()));
+
+			// Main Page
+			builder.Services.AddSingleton<MainPage>();
 
 
 
@@ -41,7 +44,8 @@ namespace TrucoRioPlatense {
 				ApiKey = builder.Configuration["Firebase:ApiKey"],
 				AuthDomain = builder.Configuration["Firebase:AuthDomain"],
 				Providers = [
-					new EmailProvider()
+					new EmailProvider(),
+					new GoogleProvider()
 				]
 			}));
 
