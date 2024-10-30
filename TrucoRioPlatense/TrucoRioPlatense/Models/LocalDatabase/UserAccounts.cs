@@ -8,32 +8,29 @@ namespace TrucoRioPlatense.Models.LocalDatabase {
 
 		[AutoIncrement]
 		public int Id { get; set; }
-		public string PlayerID { get; set; }
+		public string Uid { get; set; }
 		public string? DisplayName { get; set; }
 		public string Email { get; set; }
-		public string Password { get; set; }
-		public string? Token { get; set; }
-		public DateTime? TokenExpireDate { get; set; }
+		public string FirstName { get; set; }
+		public string LastName { get; set; }
 
 
 		public UserAccounts() { }
 
 		private void Cargar(UserAccounts obj) {
 			Id = obj.Id;
-			PlayerID = obj.PlayerID;
+			Uid = obj.Uid;
 			DisplayName = obj.DisplayName;
 			Email = obj.Email;
-			Password = obj.Password;
-			Token = obj.Token;
-			TokenExpireDate = obj.TokenExpireDate;
+			FirstName = obj.FirstName;
+			LastName = obj.LastName;
 		}
 		public void CargarNuevoUsuario(UserCredential auth) {
-			PlayerID = auth.User.Uid;
+			Uid = auth.User.Uid;
 			DisplayName = auth.User.Info.DisplayName;
-			Token = auth.User.Credential.IdToken;
-			TokenExpireDate = auth.User.Credential.Created.AddSeconds(auth.User.Credential.ExpiresIn);
 			Email = auth.User.Info.Email;
-			Password = "";
+			FirstName = auth.User.Info.FirstName;
+			LastName = auth.User.Info.LastName;
 		}
 
 		public async Task<bool> GetUserAsync(SQLiteDB connection, Expression<Func<UserAccounts, bool>> func) {

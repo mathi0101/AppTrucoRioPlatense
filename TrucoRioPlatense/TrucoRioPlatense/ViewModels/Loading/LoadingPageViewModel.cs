@@ -3,6 +3,7 @@ using TrucoRioPlatense.Features.Commands.Auth;
 using TrucoRioPlatense.Models.LocalDatabase;
 using TrucoRioPlatense.Models.Login;
 using TrucoRioPlatense.Pages;
+using TrucoRioPlatense.Services.SecureStorageHandler;
 using TrucoRioPlatense.Services.Sqlite3;
 using TrucoRioPlatense.ViewModels.Login;
 
@@ -48,40 +49,26 @@ namespace TrucoRioPlatense.ViewModels.Register {
 
 		#region Privados
 
-		private async Task<UserAccounts?> CheckUserInDatabaseAsync() {
-			await _dbConnection.PreloadDatabase();
 
-			var usr = new UserAccounts();
-
-			return await usr.GetUserAsync(_dbConnection, u => !string.IsNullOrEmpty(u.Token)) ? usr : null;
-		}
 
 		#endregion
 
 		#region Publicas
 
-		internal async Task LoadDataAsync() {
+		internal async Task StartApplicaction() {
+			await _dbConnection.PreloadDatabase();
 			await Task.Delay(5000);
 
-			var user = await CheckUserInDatabaseAsync();
-
-			//LoginViewPageModel viewModel = new LoginViewPageModel(_authClient, _currentUserStore, _dbConnection);
-			if (user == null) {
+			var tokenId = await _currentUserStore.GetUserTokenId(_authClient);
+			if (string.IsNullOrEmpty(tokenId)) {
 				Application.Current.MainPage = new NavigationPage(new LoginViewPage(_loginViewModel));
 				return;
-			} else if (DateTime.Now > user.TokenExpireDate) {
+			} else {
+				var sshUserUid = await SSH.GetAsync(SSH.SSH_Keys_Enum.UserUid);
 
-				_loginViewModel.Email = user.Email;
-				_loginViewModel.Password = user.Password;
-				var result = await _loginCommand.ExecuteWithResultAsync(FirebaseProviderType.EmailAndPassword);
-
-				;
-				if (result.Value != Authentication_View_Response.Success) {
-					Application.Current.MainPage = new NavigationPage(new LoginViewPage(_loginViewModel));
-					return;
-				}
+				var userAccount = new UserAccounts();
+				await userAccount.GetUserAsync(_dbConnection, u => u.Uid == sshUserUid);
 			}
-
 			Application.Current.MainPage = new NavigationPage(new MainPage());
 			//await Shell.Current.GoToAsync(nameof(MainPage));
 		}

@@ -10,13 +10,22 @@ namespace TrucoRioPlatense.Pages {
 			InitializeComponent();
 
 			BindingContext = bindingContext;
+
+#if WINDOWS
+
+			var window = Application.Current.Windows.FirstOrDefault();
+			if (window != null) {
+				window.Width = 360;
+				window.Height = 640;
+			}
+#endif
 		}
 
 		protected override async void OnAppearing() {
 			base.OnAppearing();
 
 			if (_model != null)
-				await _model.LoadDataAsync();
+				await _model.StartApplicaction();
 		}
 	}
 }

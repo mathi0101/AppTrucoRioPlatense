@@ -11,5 +11,7 @@ namespace TrucoRioPlatense {
 			Routing.RegisterRoute(nameof(RegisterViewPage), typeof(RegisterViewPage));
 			Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
 		}
+
+
 	}
 }

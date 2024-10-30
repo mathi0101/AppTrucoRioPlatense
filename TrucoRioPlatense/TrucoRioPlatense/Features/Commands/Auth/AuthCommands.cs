@@ -1,6 +1,7 @@
 ﻿using Firebase.Auth;
 using TrucoRioPlatense.Models.LocalDatabase;
 using TrucoRioPlatense.Models.Login;
+using TrucoRioPlatense.Services.SecureStorageHandler;
 using TrucoRioPlatense.Services.Sqlite3;
 using TrucoRioPlatense.ViewModels.Login;
 using TrucoRioPlatense.ViewModels.Register;
@@ -25,7 +26,6 @@ namespace TrucoRioPlatense.Features.Commands.Auth {
 				UserCredential auth = await _authClient.CreateUserWithEmailAndPasswordAsync(_viewModel.Email, _viewModel.Password, _viewModel.DisplayName);
 				if (auth != null) {
 					_currentUserStore.AuthenticatedUserCredential = auth;
-					await SaveNewLocalUser(auth);
 
 					return AsyncCommandBaseResult.Success;
 				} else {
@@ -34,21 +34,6 @@ namespace TrucoRioPlatense.Features.Commands.Auth {
 			} catch (FirebaseAuthHttpException ex) {
 				return new AsyncCommandBaseResult(ex);
 			}
-		}
-
-		private async Task SaveNewLocalUser(UserCredential auth) {
-			UserAccounts user = new UserAccounts();
-			user.CargarNuevoUsuario(auth);
-
-			var actualUsers = await _dbConnection.Connection.Table<UserAccounts>().ToListAsync();
-			if (actualUsers.Count > 0) {
-				actualUsers.ForEach(x => {
-					x.Token = null;
-					x.TokenExpireDate = null;
-				});
-				await _dbConnection.Connection.UpdateAllAsync(actualUsers, true);
-			}
-			await user.InsertAsync(_dbConnection);
 		}
 	}
 
@@ -109,7 +94,7 @@ namespace TrucoRioPlatense.Features.Commands.Auth {
 
 					_currentUserStore.AuthenticatedUserCredential = auth;
 
-					await AddLocalUser(auth, _dbConnection);
+					await SaveUser2Local(auth, _dbConnection);
 
 					return AsyncCommandBaseResult.Success;
 				} else
@@ -118,28 +103,20 @@ namespace TrucoRioPlatense.Features.Commands.Auth {
 				return AsyncCommandBaseResult.Unable;
 			}
 		}
-		private async Task AddLocalUser(UserCredential auth, SQLiteDB conn) {
+		private async Task SaveUser2Local(UserCredential auth, SQLiteDB conn) {
 
+			var user = new UserAccounts();
 
-			var actualUsers = await _dbConnection.Connection.Table<UserAccounts>().ToListAsync();
-			actualUsers.ForEach(x => {
-				x.Token = null;
-				x.TokenExpireDate = null;
-			});
-
-			if (actualUsers.FindIndex(u => u.PlayerID == auth.User.Uid) is int ind && ind >= 0) {
-				var usr = actualUsers[ind];
-				usr.Token = auth.User.Credential.IdToken;
-				usr.TokenExpireDate = auth.User.Credential.Created.AddSeconds(auth.User.Credential.ExpiresIn);
-				usr.Password = _loginviewModel.Password;
-			} else {
-				UserAccounts user = new UserAccounts();
+			if (!await user.GetUserAsync(conn, u => u.Uid == auth.User.Uid)) {
 				user.CargarNuevoUsuario(auth);
 
 				await user.InsertAsync(conn);
 			}
 
-			await _dbConnection.Connection.UpdateAllAsync(actualUsers, true);
+			await SSH.SetAsync(SSH.SSH_Keys_Enum.UserUid, auth.User.Uid);
+			await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenId, auth.User.Credential.IdToken);
+			await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenExpireTime, auth.User.Credential.Created.AddSeconds(auth.User.Credential.ExpiresIn).ToString());
+			await SSH.SetAsync(SSH.SSH_Keys_Enum.UserRefreshToken, auth.User.Credential.RefreshToken);
 
 		}
 	}

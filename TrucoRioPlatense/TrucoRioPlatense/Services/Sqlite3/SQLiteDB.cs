@@ -1,4 +1,5 @@
 ﻿using SQLite;
+using System.Diagnostics;
 using TrucoRioPlatense.Models.LocalDatabase;
 
 namespace TrucoRioPlatense.Services.Sqlite3 {
@@ -44,7 +45,7 @@ namespace TrucoRioPlatense.Services.Sqlite3 {
 		#region Publicos
 		internal async Task PreloadDatabase() {
 			var result = await _conn.CreateTablesAsync(CreateFlags.ImplicitPK, typeof(UserAccounts));
-
+			Debug.WriteLine("Tablas creadas con éxito");
 			;
 		}
 
