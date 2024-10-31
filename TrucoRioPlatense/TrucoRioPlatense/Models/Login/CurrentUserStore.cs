@@ -37,15 +37,17 @@ namespace TrucoRioPlatense.Models.Login {
 						if (string.IsNullOrEmpty(refreshUserToken))
 							return null;
 
+                        DateTime now = DateTime.Now;
 						var userTokenResponse = await RefreshIdTokenAsync(client, refreshUserToken);
-						if (userTokenResponse.HasValue)
+						if (!userTokenResponse.HasValue)
 							return null;
 
 
-						await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenId, userTokenResponse.Value.IdToken);
-						await SSH.SetAsync(SSH.SSH_Keys_Enum.UserRefreshToken, userTokenResponse.Value.RefreshToken);
-						await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenExpireTime, DateTime.Now.AddSeconds(int.Parse(userTokenResponse.Value.ExpiresIn)).ToString());
-						return userTokenResponse.Value.IdToken;
+						await SSH.SetAsync(SSH.SSH_Keys_Enum.UserUid, userTokenResponse.Value.user_id);
+						await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenId, userTokenResponse.Value.id_token);
+                        await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenExpireTime, now.AddSeconds(int.Parse(userTokenResponse.Value.expires_in)).ToString());
+						await SSH.SetAsync(SSH.SSH_Keys_Enum.UserRefreshToken, userTokenResponse.Value.refresh_token);
+						return userTokenResponse.Value.id_token;
 
 					}
 				} else {
@@ -71,7 +73,7 @@ namespace TrucoRioPlatense.Models.Login {
 				response.EnsureSuccessStatusCode();
 
 				var jsonResponse = await response.Content.ReadAsStringAsync();
-				var tokenResponse = JsonConvert.DeserializeObject<TokenResponse?>(jsonResponse);
+				var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(jsonResponse);
 
 				return tokenResponse;
 			} catch (Exception ex) {
@@ -79,10 +81,11 @@ namespace TrucoRioPlatense.Models.Login {
 				return null;
 			}
 		}
-		private struct TokenResponse {
-			internal string IdToken { get; set; }
-			internal string RefreshToken { get; set; }
-			internal string ExpiresIn { get; set; }
+		public struct TokenResponse {
+            public string id_token { get; set; }
+            public string user_id { get; set; }
+            public string refresh_token { get; set; }
+            public string expires_in { get; set; }
 		}
 	}
 }

@@ -29,6 +29,7 @@ namespace TrucoRioPlatense.Services.Sqlite3 {
 		#endregion
 
 		#region Metodos
+
 		#region Privados
 		private string GetDatabasePath(string dbName) {
 			string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -42,6 +43,7 @@ namespace TrucoRioPlatense.Services.Sqlite3 {
 			return Path.Combine(folderPath, dbName);
 		}
 		#endregion
+
 		#region Publicos
 		internal async Task PreloadDatabase() {
 			var result = await _conn.CreateTablesAsync(CreateFlags.ImplicitPK, typeof(UserAccounts));
@@ -51,6 +53,7 @@ namespace TrucoRioPlatense.Services.Sqlite3 {
 
 
 		#endregion
+
 		#endregion
 	}
 }
