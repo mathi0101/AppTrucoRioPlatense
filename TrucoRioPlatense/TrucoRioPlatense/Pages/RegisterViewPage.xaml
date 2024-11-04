@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TrucoRioPlatense.Pages.RegisterViewPage">
-    <StackLayout Padding="30">
+    <StackLayout Padding="30" Spacing="5">
         <Label Text="Registro Truco Rio Platense" FontSize="32" HorizontalOptions="Center" />
 
         <Entry x:Name="DisplayNameEntry" Placeholder="Nombre de usuario" Text="{Binding DisplayName}" />

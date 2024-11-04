@@ -85,19 +85,11 @@ namespace TrucoRioPlatense.ViewModels.Login {
 					var result = await _loginCommand.ExecuteWithResultAsync(FirebaseProviderType.EmailAndPassword);
 
 
-
-
-
 					if (result.Value == Authentication_View_Response.Success) {
 
 						await Application.Current.MainPage.DisplayAlert("Éxito", "Bienvenido!", "OK");
 
 						Application.Current.MainPage = new MainPage();
-					} else {
-
-						await Application.Current.MainPage.DisplayAlert("Error", "Hubo un error en el registro", "OK");
-
-
 					}
 				} else {
 					await Application.Current.MainPage.DisplayAlert("Error", "Faltan datos", "OK");
@@ -147,6 +139,7 @@ namespace TrucoRioPlatense.ViewModels.Login {
 		private async void OnNavigateToRegister() {
 
 			RegisterViewPageModel registerModel = new RegisterViewPageModel(_authClient, _currentUserStore, _dbConnection);
+			registerModel.Email = email;
 
 			registerModel.RegistrationCompleted += RegisterModel_RegistrationCompleted;
 

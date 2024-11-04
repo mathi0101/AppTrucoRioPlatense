@@ -21,7 +21,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>TrucoRioPlatense</ApplicationTitle>
+		<ApplicationTitle>Truco Rio Platense</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.trucorioplatense</ApplicationId>
@@ -43,12 +43,60 @@
                 <AndroidSigningKeyPass>Dynamia2024!</AndroidSigningKeyPass>
                 <AndroidSigningStorePass>Dynamia2024!</AndroidSigningStorePass>
                 <AndroidSigningKeyStore>Credentials/my-release-key.jks</AndroidSigningKeyStore>
+                <PackageIcon></PackageIcon>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+	  <ApplicationId>com.devGroup.trucoRioPlatense</ApplicationId>
+	  <ApplicationTitle>Truco Rio Platense</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+	  <ApplicationId>com.devGroup.trucoRioPlatense</ApplicationId>
+	  <ApplicationTitle>Truco Rio Platense</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android34.0|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+	  <ApplicationId>com.devGroup.trucoRioPlatense</ApplicationId>
+	  <ApplicationTitle>Truco Rio Platense</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+	  <ApplicationId>com.devGroup.trucoRioPlatense</ApplicationId>
+	  <ApplicationTitle>Truco Rio Platense</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+	  <ApplicationId>com.devGroup.trucoRioPlatense</ApplicationId>
+	  <ApplicationTitle>Truco Rio Platense</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+	  <ApplicationId>com.devGroup.trucoRioPlatense</ApplicationId>
+	  <ApplicationTitle>Truco Rio Platense</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android34.0|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+	  <ApplicationId>com.devGroup.trucoRioPlatense</ApplicationId>
+	  <ApplicationTitle>Truco Rio Platense</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
+	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+	  <ApplicationId>com.devGroup.trucoRioPlatense</ApplicationId>
+	  <ApplicationTitle>Truco Rio Platense</ApplicationTitle>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
-
+		<MauiIcon Include="Resources\AppIcon\icon.svg" />
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
@@ -91,7 +139,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Constants\" />
-	  <Folder Include="Services\Firebase\" />
 	  <Folder Include="Views\Register\" />
 	</ItemGroup>
 
@@ -105,6 +152,18 @@
 	  <Compile Update="Pages\LoginViewPage.xaml.cs">
 	    <DependentUpon>LoginViewPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Properties\Resources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Resources.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Properties\Resources.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
