@@ -21,6 +21,16 @@ namespace TrucoRioPlatense.Models.Login {
 				} else {
 					return AuthenticatedUserCredential.User.Credential.IdToken;
 				}
+				// Todo lo de arriba se puede resumir ya que internamente ya chequea que no haya expirado.
+				//
+				string token = await AuthenticatedUserCredential.User.GetIdTokenAsync();
+				if (token == await SSH.GetAsync(SSH.SSH_Keys_Enum.UserTokenId)) return token;
+				await SSH.SetAsync(SSH.SSH_Keys_Enum.UserUid, AuthenticatedUserCredential.User.Uid);
+				await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenId, token);
+				await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenExpireTime, AuthenticatedUserCredential.User.Credential.Created.AddSeconds(AuthenticatedUserCredential.User.Credential.ExpiresIn).ToString());
+				await SSH.SetAsync(SSH.SSH_Keys_Enum.UserRefreshToken, AuthenticatedUserCredential.User.Credential.RefreshToken);
+				return token;
+
 			} else {
 				// Ya no hay usuario en memoria
 				var sshTokenExpireTime = await SSH.GetAsync(SSH.SSH_Keys_Enum.UserTokenExpireTime);

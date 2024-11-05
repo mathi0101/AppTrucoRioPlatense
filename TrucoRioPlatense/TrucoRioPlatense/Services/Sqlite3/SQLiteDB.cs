@@ -49,11 +49,11 @@ namespace TrucoRioPlatense.Services.Sqlite3 {
 			var result = await _conn.CreateTablesAsync(CreateFlags.ImplicitPK, typeof(UserAccounts));
 			Debug.WriteLine("Tablas creadas con éxito");
 			;
-		}
+        }
 
 
-		#endregion
+        #endregion
 
-		#endregion
-	}
+        #endregion
+    }
 }
