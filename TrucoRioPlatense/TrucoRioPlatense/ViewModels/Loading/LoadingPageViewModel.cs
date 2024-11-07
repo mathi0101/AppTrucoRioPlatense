@@ -57,9 +57,11 @@ namespace TrucoRioPlatense.ViewModels.Register {
 
 		internal async Task StartApplicaction() {
 			await _dbConnection.PreloadDatabase();
-            await Task.Delay(5000);
+			await Task.Delay(5000);
 
-            var tokenId = await _currentUserStore.GetUserTokenId(_authClient);
+			// Hacemos prueba en Jira
+
+			var tokenId = await _currentUserStore.GetUserTokenId(_authClient);
 			if (string.IsNullOrEmpty(tokenId)) {
 				Application.Current.MainPage = new NavigationPage(new LoginViewPage(_loginViewModel));
 				return;
