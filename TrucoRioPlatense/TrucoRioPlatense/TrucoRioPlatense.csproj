@@ -36,7 +36,7 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
-		<UserSecretsId>f2b7eac5-fe1e-4036-9d16-a11638f12ba5</UserSecretsId>
+		<UserSecretsId>AppSecrets</UserSecretsId>
 
 		<AndroidKeyStore>True</AndroidKeyStore>
                 <AndroidSigningKeyAlias>myKeySign</AndroidSigningKeyAlias>

@@ -3,6 +3,7 @@ using System.Reflection;
 
 namespace TrucoRioPlatense.Data.MauiBuilder {
 	internal static class AppCredentialsLoader {
+		private const string USER_SECRETS_ID = "AppSecrets";
 		public static void LoadCredentials(MauiAppBuilder builder) {
 
 			string configPath;
@@ -18,7 +19,12 @@ namespace TrucoRioPlatense.Data.MauiBuilder {
 			configPath = "Credentials/appSettings.json";
 #endif
 			try {
-				builder.Configuration.AddJsonFile(configPath, optional: false, reloadOnChange: true);
+				//builder.Configuration.AddJsonFile(configPath, optional: false, reloadOnChange: true); // Carga la configuracion desde un json local (PELIGROSO)
+
+				// Mejor usemos User Secrets
+
+				builder.Configuration.AddUserSecrets(USER_SECRETS_ID);
+
 			} catch (Exception ex) {
 				throw ex;
 			}
