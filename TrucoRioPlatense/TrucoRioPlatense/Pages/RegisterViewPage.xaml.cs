@@ -1,7 +1,8 @@
-using TrucoRioPlatense.ViewModels.Register;
+using TrucoRioPlatense.ViewModels.Login;
 
-namespace TrucoRioPlatense.Pages {
-	public partial class RegisterViewPage : ContentPage {
+namespace TrucoRioPlatense.Pages
+{
+    public partial class RegisterViewPage : ContentPage {
 
 
 		private RegisterViewPageModel _model { get => BindingContext as RegisterViewPageModel; }

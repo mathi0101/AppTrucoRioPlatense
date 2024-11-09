@@ -4,26 +4,26 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:pages="clr-namespace:TrucoRioPlatense.Pages"
-    Shell.FlyoutBehavior="Disabled"
+    xmlns:MenuPages="clr-namespace:TrucoRioPlatense.Pages.MainMenuPages"
+    Shell.FlyoutBehavior="Flyout"
     Title="Truco Rio Platense">
 
-    <ShellContent
-    ContentTemplate="{DataTemplate pages:LoadingPage}"
-    Route="LoadingPage" />
 
-    <ShellContent
-    Title="Login"
-    ContentTemplate="{DataTemplate pages:LoginViewPage}"
-    Route="LoginPage" />
 
-    <ShellContent
-    Title="Register"
-    ContentTemplate="{DataTemplate pages:RegisterViewPage}"
-    Route="RegisterPage" />
+    <TabBar >
+        <Tab Title="Jugar" Icon="icon_jugar.png">
+            <ShellContent ContentTemplate="{DataTemplate MenuPages:NewPage1}" />
+        </Tab>
+        <Tab Title="Menu" Icon="icon_menu.png">
+            <ShellContent
+            ContentTemplate="{DataTemplate pages:MainMenuPage}"
+            Route="MainMenu" />
+        </Tab>
+        <Tab Title="Personalización" Icon="icon_personalizacion.png">
+            <ShellContent ContentTemplate="{DataTemplate MenuPages:NewPage1}" />
+        </Tab>
+    </TabBar>
+    <MenuItem Text="Cerrar sesión" Clicked="SignOut_Clicked"/>
 
-    <ShellContent
-    Title="Main"
-    ContentTemplate="{DataTemplate pages:MainPage}"
-    Route="MainPage" />
 
 </Shell>

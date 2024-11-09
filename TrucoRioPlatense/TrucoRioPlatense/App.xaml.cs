@@ -1,10 +1,14 @@
-﻿namespace TrucoRioPlatense {
+﻿using TrucoRioPlatense.Pages;
+using TrucoRioPlatense.ViewModels.Register;
+
+namespace TrucoRioPlatense {
 	public partial class App : Application {
-		public App() {
+		public App(IServiceProvider serviceProvider) {
 			InitializeComponent();
 
-			MainPage = new AppShell();
+			var loadinViewModel = serviceProvider.GetRequiredService<LoadingPageViewModel>();
 
+			MainPage = new LoadingPage(loadinViewModel);
 		}
 	}
 }

@@ -4,10 +4,10 @@ using TrucoRioPlatense.Models.Login;
 using TrucoRioPlatense.Services.SecureStorageHandler;
 using TrucoRioPlatense.Services.Sqlite3;
 using TrucoRioPlatense.ViewModels.Login;
-using TrucoRioPlatense.ViewModels.Register;
 
-namespace TrucoRioPlatense.Features.Commands.Auth {
-	internal class RegisterCommand : AsyncCommandBase {
+namespace TrucoRioPlatense.Features.Commands.Auth
+{
+    internal class RegisterCommand : AsyncCommandBase {
 		private readonly RegisterViewPageModel _viewModel;
 		private readonly FirebaseAuthClient _authClient;
 		private readonly CurrentUserStore _currentUserStore;

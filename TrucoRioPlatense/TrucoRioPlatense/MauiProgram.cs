@@ -5,6 +5,7 @@ using TrucoRioPlatense.Models.Login;
 using TrucoRioPlatense.Pages;
 using TrucoRioPlatense.Services.Sqlite3;
 using TrucoRioPlatense.ViewModels.Login;
+using TrucoRioPlatense.ViewModels.MainMenu;
 using TrucoRioPlatense.ViewModels.Register;
 
 namespace TrucoRioPlatense {
@@ -21,16 +22,17 @@ namespace TrucoRioPlatense {
 
 			// Loading Page
 			builder.Services.AddSingleton<LoadingPageViewModel>();
-			builder.Services.AddSingleton<LoadingPage>(s => new LoadingPage(s.GetRequiredService<LoadingPageViewModel>()));
+			builder.Services.AddSingleton(s => new LoadingPage(s.GetRequiredService<LoadingPageViewModel>()));
 			// Login Page
 			builder.Services.AddSingleton<LoginViewPageModel>();
-			builder.Services.AddSingleton<LoginViewPage>(s => new LoginViewPage(s.GetRequiredService<LoginViewPageModel>()));
+			builder.Services.AddSingleton(s => new LoginViewPage(s.GetRequiredService<LoginViewPageModel>()));
 			// Register Page
 			builder.Services.AddTransient<RegisterViewPageModel>();
-			builder.Services.AddTransient<RegisterViewPage>(s => new RegisterViewPage(s.GetRequiredService<RegisterViewPageModel>()));
+			builder.Services.AddTransient(s => new RegisterViewPage(s.GetRequiredService<RegisterViewPageModel>()));
 
-			// Main Page
-			builder.Services.AddSingleton<MainPage>();
+			// Main Menu Page
+			builder.Services.AddSingleton<MainMenuViewModel>();
+			builder.Services.AddSingleton(s => new MainMenuPage(s.GetRequiredService<MainMenuViewModel>()));
 
 
 

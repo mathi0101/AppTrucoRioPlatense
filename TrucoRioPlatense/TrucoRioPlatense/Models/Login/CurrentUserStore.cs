@@ -11,16 +11,16 @@ namespace TrucoRioPlatense.Models.Login {
 		internal async Task<string?> GetUserTokenId(FirebaseAuthClient client) {
 			if (AuthenticatedUserCredential != null) {
 				// Si en memoria el usuario sigue autenticado
-				if (AuthenticatedUserCredential.User.Credential.IsExpired()) {
-					string newToken = await AuthenticatedUserCredential.User.GetIdTokenAsync(true);
-					await SSH.SetAsync(SSH.SSH_Keys_Enum.UserUid, AuthenticatedUserCredential.User.Uid);
-					await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenId, newToken);
-					await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenExpireTime, AuthenticatedUserCredential.User.Credential.Created.AddSeconds(AuthenticatedUserCredential.User.Credential.ExpiresIn).ToString());
-					await SSH.SetAsync(SSH.SSH_Keys_Enum.UserRefreshToken, AuthenticatedUserCredential.User.Credential.RefreshToken);
-					return newToken;
-				} else {
-					return AuthenticatedUserCredential.User.Credential.IdToken;
-				}
+				//if (AuthenticatedUserCredential.User.Credential.IsExpired()) {
+				//	string newToken = await AuthenticatedUserCredential.User.GetIdTokenAsync(true);
+				//	await SSH.SetAsync(SSH.SSH_Keys_Enum.UserUid, AuthenticatedUserCredential.User.Uid);
+				//	await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenId, newToken);
+				//	await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenExpireTime, AuthenticatedUserCredential.User.Credential.Created.AddSeconds(AuthenticatedUserCredential.User.Credential.ExpiresIn).ToString());
+				//	await SSH.SetAsync(SSH.SSH_Keys_Enum.UserRefreshToken, AuthenticatedUserCredential.User.Credential.RefreshToken);
+				//	return newToken;
+				//} else {
+				//	return AuthenticatedUserCredential.User.Credential.IdToken;
+				//}
 				// Todo lo de arriba se puede resumir ya que internamente ya chequea que no haya expirado.
 				//
 				string token = await AuthenticatedUserCredential.User.GetIdTokenAsync();
@@ -47,7 +47,7 @@ namespace TrucoRioPlatense.Models.Login {
 						if (string.IsNullOrEmpty(refreshUserToken))
 							return null;
 
-                        DateTime now = DateTime.Now;
+						DateTime now = DateTime.Now;
 						var userTokenResponse = await RefreshIdTokenAsync(client, refreshUserToken);
 						if (!userTokenResponse.HasValue)
 							return null;
@@ -55,7 +55,7 @@ namespace TrucoRioPlatense.Models.Login {
 
 						await SSH.SetAsync(SSH.SSH_Keys_Enum.UserUid, userTokenResponse.Value.user_id);
 						await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenId, userTokenResponse.Value.id_token);
-                        await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenExpireTime, now.AddSeconds(int.Parse(userTokenResponse.Value.expires_in)).ToString());
+						await SSH.SetAsync(SSH.SSH_Keys_Enum.UserTokenExpireTime, now.AddSeconds(int.Parse(userTokenResponse.Value.expires_in)).ToString());
 						await SSH.SetAsync(SSH.SSH_Keys_Enum.UserRefreshToken, userTokenResponse.Value.refresh_token);
 						return userTokenResponse.Value.id_token;
 
@@ -92,10 +92,10 @@ namespace TrucoRioPlatense.Models.Login {
 			}
 		}
 		public struct TokenResponse {
-            public string id_token { get; set; }
-            public string user_id { get; set; }
-            public string refresh_token { get; set; }
-            public string expires_in { get; set; }
+			public string id_token { get; set; }
+			public string user_id { get; set; }
+			public string refresh_token { get; set; }
+			public string expires_in { get; set; }
 		}
 	}
 }

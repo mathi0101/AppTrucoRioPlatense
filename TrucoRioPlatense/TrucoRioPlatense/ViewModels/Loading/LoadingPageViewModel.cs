@@ -1,4 +1,5 @@
 ﻿using Firebase.Auth;
+using System.Diagnostics;
 using TrucoRioPlatense.Features.Commands.Auth;
 using TrucoRioPlatense.Models.LocalDatabase;
 using TrucoRioPlatense.Models.Login;
@@ -22,7 +23,7 @@ namespace TrucoRioPlatense.ViewModels.Register {
 		#endregion
 
 		#region Publicas
-		public string VersionNumber { get => "Version: " + AppInfo.VersionString; }
+		public string VersionNumber { get => $"Version: {AppInfo.Version.Major}.{AppInfo.Version.Minor}.{AppInfo.Version.Build}"; }
 		#endregion
 
 		#endregion
@@ -57,6 +58,12 @@ namespace TrucoRioPlatense.ViewModels.Register {
 
 		internal async Task StartApplicaction() {
 			await _dbConnection.PreloadDatabase();
+
+			await Task.Delay(2500);
+			if (Debugger.IsAttached) {
+				Application.Current.MainPage = new AppShell();
+				return;
+			}
 			await Task.Delay(5000);
 
 			// Hacemos prueba en Jira
@@ -71,7 +78,7 @@ namespace TrucoRioPlatense.ViewModels.Register {
 				var userAccount = new UserAccounts();
 				await userAccount.GetUserAsync(_dbConnection, u => u.Uid == sshUserUid);
 			}
-			Application.Current.MainPage = new NavigationPage(new MainPage());
+			Application.Current.MainPage = new AppShell();
 			//await Shell.Current.GoToAsync(nameof(MainPage));
 		}
 

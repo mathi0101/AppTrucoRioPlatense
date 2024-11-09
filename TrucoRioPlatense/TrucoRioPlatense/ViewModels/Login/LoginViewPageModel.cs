@@ -5,7 +5,6 @@ using TrucoRioPlatense.Helpers;
 using TrucoRioPlatense.Models.Login;
 using TrucoRioPlatense.Pages;
 using TrucoRioPlatense.Services.Sqlite3;
-using TrucoRioPlatense.ViewModels.Register;
 
 namespace TrucoRioPlatense.ViewModels.Login {
 	internal class LoginViewPageModel : ViewModelBase {
@@ -89,7 +88,7 @@ namespace TrucoRioPlatense.ViewModels.Login {
 
 						await Application.Current.MainPage.DisplayAlert("Éxito", "Bienvenido!", "OK");
 
-						Application.Current.MainPage = new MainPage();
+						Application.Current.MainPage = new AppShell();
 					}
 				} else {
 					await Application.Current.MainPage.DisplayAlert("Error", "Faltan datos", "OK");
@@ -127,7 +126,7 @@ namespace TrucoRioPlatense.ViewModels.Login {
 
 					await Application.Current.MainPage.DisplayAlert("Éxito", "Bienvenido!", "OK");
 
-					Application.Current.MainPage = new MainPage();
+					Application.Current.MainPage = new AppShell();
 				} else {
 
 					await Application.Current.MainPage.DisplayAlert("Error", "Hubo un error en el registro", "OK");
