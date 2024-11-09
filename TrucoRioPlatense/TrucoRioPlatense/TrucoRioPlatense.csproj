@@ -120,10 +120,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="appSettings.json" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <EmbeddedResource Include="Credentials\appSettings.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
