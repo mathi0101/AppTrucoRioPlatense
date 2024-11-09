@@ -26,5 +26,6 @@ namespace TrucoRioPlatense {
 				Application.Current.MainPage = new NavigationPage(new LoginViewPage(viewModel));
 			}
 		}
+
 	}
 }
